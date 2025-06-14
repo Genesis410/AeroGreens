@@ -71,6 +71,172 @@
         .floating {
             animation: float 3s ease-in-out infinite;
         }
+        
+        /* Gauge styles */
+        .gauge-container {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            margin: 0 auto;
+        }
+        
+        .gauge-background {
+            position: absolute;
+            width: 100%;
+            height: 90px;
+            overflow: hidden;
+        }
+        
+        .gauge-background::before {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 20px solid #e5e7eb;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .gauge-fill {
+            position: absolute;
+            width: 100%;
+            height: 90px;
+            overflow: hidden;
+        }
+        
+        .gauge-fill::before {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 20px solid;
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(45deg);
+        }
+        
+        .gauge-cover {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gauge-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .gauge-label {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        
+        .gauge-markings {
+            position: absolute;
+            width: 100%;
+            height: 90px;
+        }
+        
+        .gauge-marking {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) rotate(var(--rotation));
+            transform-origin: bottom center;
+            height: 10px;
+            width: 2px;
+            background: #9ca3af;
+        }
+        
+        .gauge-numbers {
+            position: absolute;
+            width: 100%;
+            height: 90px;
+        }
+        
+        .gauge-number {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) rotate(var(--rotation));
+            transform-origin: bottom center;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .gauge-needle {
+            position: absolute;
+            width: 4px;
+            height: 70px;
+            background: #1f2937;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) rotate(var(--rotation, 45deg));
+            transform-origin: bottom center;
+            z-index: 5;
+            transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 2px;
+        }
+        
+        .gauge-needle::after {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #1f2937;
+            border-radius: 50%;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .air-gauge .gauge-fill::before {
+            border-top-color: #3b82f6;
+            border-right-color: #3b82f6;
+        }
+        
+        .sound-gauge .gauge-fill::before {
+            border-top-color: #10b981;
+            border-right-color: #10b981;
+        }
+        
+        .quality-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        
+        .indicator-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-800">
@@ -157,39 +323,84 @@
                                 <div class="ml-4 text-sm font-medium text-gray-700">AeroGreen Dashboard</div>
                             </div>
                             <div class="p-6">
-                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <!-- Air Quality Gauge -->
                                     <div class="bg-blue-50 p-4 rounded-lg">
-                                        <div class="flex items-center">
-                                            <div class="bg-blue-100 p-2 rounded-full mr-3">
-                                                <i class="fas fa-wind text-blue-600"></i>
-                                            </div>
-                                            <div>
-                                                <div class="text-xs text-gray-500">Air Quality</div>
-                                                <div class="font-bold text-blue-600">Excellent</div>
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center">
+                                                <div class="bg-blue-100 p-2 rounded-full mr-3">
+                                                    <i class="fas fa-wind text-blue-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-xs text-gray-500">Air Quality</div>
+                                                    <div class="text-sm font-medium text-blue-600">PM2.5 Level</div>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="gauge-container air-gauge">
+                                            <div class="gauge-background"></div>
+                                            <div class="gauge-fill"></div>
+                                            <div class="gauge-markings">
+                                                <div class="gauge-marking" style="--rotation: 45deg;"></div>
+                                                <div class="gauge-marking" style="--rotation: 90deg;"></div>
+                                                <div class="gauge-marking" style="--rotation: 135deg;"></div>
+                                            </div>
+                                            <div class="gauge-numbers">
+                                                <div class="gauge-number" style="--rotation: 45deg;">0</div>
+                                                <div class="gauge-number" style="--rotation: 90deg;">50</div>
+                                                <div class="gauge-number" style="--rotation: 135deg;">100</div>
+                                            </div>
+                                            <div class="gauge-needle" id="airNeedle1"></div>
+                                            <div class="gauge-cover">
+                                                <div class="gauge-value" id="airValue1">0</div>
+                                                <div class="gauge-label">μg/m³</div>
+                                            </div>
+                                        </div>
+                                        <div class="quality-indicator">
+                                            <div class="indicator-dot bg-green-500"></div>
+                                            <div class="indicator-text text-green-700">Excellent</div>
+                                        </div>
                                     </div>
+                                    
+                                    <!-- Sound Level Gauge -->
                                     <div class="bg-green-50 p-4 rounded-lg">
-                                        <div class="flex items-center">
-                                            <div class="bg-green-100 p-2 rounded-full mr-3">
-                                                <i class="fas fa-volume-down text-green-600"></i>
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center">
+                                                <div class="bg-green-100 p-2 rounded-full mr-3">
+                                                    <i class="fas fa-volume-down text-green-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-xs text-gray-500">Sound Level</div>
+                                                    <div class="text-sm font-medium text-green-600">dB Level</div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="text-xs text-gray-500">Sound Level</div>
-                                                <div class="font-bold text-green-600">Normal</div>
+                                        </div>
+                                        <div class="gauge-container sound-gauge">
+                                            <div class="gauge-background"></div>
+                                            <div class="gauge-fill"></div>
+                                            <div class="gauge-markings">
+                                                <div class="gauge-marking" style="--rotation: 45deg;"></div>
+                                                <div class="gauge-marking" style="--rotation: 90deg;"></div>
+                                                <div class="gauge-marking" style="--rotation: 135deg;"></div>
                                             </div>
+                                            <div class="gauge-numbers">
+                                                <div class="gauge-number" style="--rotation: 45deg;">30</div>
+                                                <div class="gauge-number" style="--rotation: 90deg;">65</div>
+                                                <div class="gauge-number" style="--rotation: 135deg;">100</div>
+                                            </div>
+                                            <div class="gauge-needle" id="soundNeedle1"></div>
+                                            <div class="gauge-cover">
+                                                <div class="gauge-value" id="soundValue1">0</div>
+                                                <div class="gauge-label">dB</div>
+                                            </div>
+                                        </div>
+                                        <div class="quality-indicator">
+                                            <div class="indicator-dot bg-green-500"></div>
+                                            <div class="indicator-text text-green-700">Normal</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="bg-gray-100 rounded-lg p-4 mb-4">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <div class="text-sm font-medium text-gray-700">Real-time Monitoring</div>
-                                        <div class="text-xs text-gray-500">Updated: <span id="refreshTime">10s ago</span></div>
-                                    </div>
-                                    <div class="h-40 bg-white rounded p-2">
-                                        <canvas id="dashboardChart" width="100%" height="100%"></canvas>
-                                    </div>
-                                </div>
+                                
                                 <div class="flex justify-between items-center">
                                     <div class="text-sm text-gray-500">Purifier Status: <span class="font-medium text-green-600">Active</span></div>
                                     <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">
@@ -654,39 +865,84 @@
                                 <div class="ml-4 text-sm font-medium text-gray-700">AeroGreen Dashboard</div>
                             </div>
                             <div class="p-6">
-                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <!-- Air Quality Gauge -->
                                     <div class="bg-blue-50 p-4 rounded-lg">
-                                        <div class="flex items-center">
-                                            <div class="bg-blue-100 p-2 rounded-full mr-3">
-                                                <i class="fas fa-wind text-blue-600"></i>
-                                            </div>
-                                            <div>
-                                                <div class="text-xs text-gray-500">Air Quality</div>
-                                                <div class="font-bold text-blue-600">Excellent</div>
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center">
+                                                <div class="bg-blue-100 p-2 rounded-full mr-3">
+                                                    <i class="fas fa-wind text-blue-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-xs text-gray-500">Air Quality</div>
+                                                    <div class="text-sm font-medium text-blue-600">PM2.5 Level</div>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="gauge-container air-gauge">
+                                            <div class="gauge-background"></div>
+                                            <div class="gauge-fill"></div>
+                                            <div class="gauge-markings">
+                                                <div class="gauge-marking" style="--rotation: 45deg;"></div>
+                                                <div class="gauge-marking" style="--rotation: 90deg;"></div>
+                                                <div class="gauge-marking" style="--rotation: 135deg;"></div>
+                                            </div>
+                                            <div class="gauge-numbers">
+                                                <div class="gauge-number" style="--rotation: 45deg;">0</div>
+                                                <div class="gauge-number" style="--rotation: 90deg;">50</div>
+                                                <div class="gauge-number" style="--rotation: 135deg;">100</div>
+                                            </div>
+                                            <div class="gauge-needle" id="airNeedle2"></div>
+                                            <div class="gauge-cover">
+                                                <div class="gauge-value" id="airValue2">0</div>
+                                                <div class="gauge-label">μg/m³</div>
+                                            </div>
+                                        </div>
+                                        <div class="quality-indicator">
+                                            <div class="indicator-dot bg-green-500"></div>
+                                            <div class="indicator-text text-green-700">Excellent</div>
+                                        </div>
                                     </div>
+                                    
+                                    <!-- Sound Level Gauge -->
                                     <div class="bg-green-50 p-4 rounded-lg">
-                                        <div class="flex items-center">
-                                            <div class="bg-green-100 p-2 rounded-full mr-3">
-                                                <i class="fas fa-volume-down text-green-600"></i>
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center">
+                                                <div class="bg-green-100 p-2 rounded-full mr-3">
+                                                    <i class="fas fa-volume-down text-green-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-xs text-gray-500">Sound Level</div>
+                                                    <div class="text-sm font-medium text-green-600">dB Level</div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="text-xs text-gray-500">Sound Level</div>
-                                                <div class="font-bold text-green-600">Normal</div>
+                                        </div>
+                                        <div class="gauge-container sound-gauge">
+                                            <div class="gauge-background"></div>
+                                            <div class="gauge-fill"></div>
+                                            <div class="gauge-markings">
+                                                <div class="gauge-marking" style="--rotation: 45deg;"></div>
+                                                <div class="gauge-marking" style="--rotation: 90deg;"></div>
+                                                <div class="gauge-marking" style="--rotation: 135deg;"></div>
                                             </div>
+                                            <div class="gauge-numbers">
+                                                <div class="gauge-number" style="--rotation: 45deg;">30</div>
+                                                <div class="gauge-number" style="--rotation: 90deg;">65</div>
+                                                <div class="gauge-number" style="--rotation: 135deg;">100</div>
+                                            </div>
+                                            <div class="gauge-needle" id="soundNeedle2"></div>
+                                            <div class="gauge-cover">
+                                                <div class="gauge-value" id="soundValue2">0</div>
+                                                <div class="gauge-label">dB</div>
+                                            </div>
+                                        </div>
+                                        <div class="quality-indicator">
+                                            <div class="indicator-dot bg-green-500"></div>
+                                            <div class="indicator-text text-green-700">Normal</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="bg-gray-100 rounded-lg p-4 mb-4">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <div class="text-sm font-medium text-gray-700">Real-time Monitoring</div>
-                                        <div class="text-xs text-gray-500">Updated: <span id="refreshTime2">10s ago</span></div>
-                                    </div>
-                                    <div class="h-40 bg-white rounded p-2">
-                                        <canvas id="dashboardChart2" width="100%" height="100%"></canvas>
-                                    </div>
-                                </div>
+                                
                                 <div class="flex justify-between items-center">
                                     <div class="text-sm text-gray-500">Purifier Status: <span class="font-medium text-green-600">Active</span></div>
                                     <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">
@@ -713,7 +969,7 @@
                             </div>
                             <div>
                                 <h5 class="text-lg font-semibold text-gray-800">Real-time Visualization</h5>
-                                <p class="text-gray-600">See exactly what's happening in your environment with live charts and gauges.</p>
+                                <p class="text-gray-600">See exactly what's happening in your environment with live gauges that update every 10 seconds.</p>
                             </div>
                         </div>
                         
@@ -725,7 +981,7 @@
                             </div>
                             <div>
                                 <h5 class="text-lg font-semibold text-gray-800">Custom Alerts</h5>
-                                <p class="text-gray-600">Set thresholds for air quality and sound levels to receive instant notifications.</p>
+                                <p class="text-gray-600">Set thresholds for air quality and sound levels to receive instant notifications when conditions change.</p>
                             </div>
                         </div>
                         
@@ -737,7 +993,7 @@
                             </div>
                             <div>
                                 <h5 class="text-lg font-semibold text-gray-800">Remote Control</h5>
-                                <p class="text-gray-600">Adjust purifier settings and system parameters from anywhere.</p>
+                                <p class="text-gray-600">Adjust purifier settings and system parameters from anywhere using our mobile-friendly interface.</p>
                             </div>
                         </div>
                         
@@ -749,7 +1005,7 @@
                             </div>
                             <div>
                                 <h5 class="text-lg font-semibold text-gray-800">Historical Data</h5>
-                                <p class="text-gray-600">Track trends and patterns over time with our comprehensive logging.</p>
+                                <p class="text-gray-600">Track trends and patterns over time with our comprehensive logging and reporting system.</p>
                             </div>
                         </div>
                     </div>
@@ -1000,83 +1256,44 @@
             });
         });
         
-        // Update dashboard refresh time
-        function updateRefreshTime() {
-            const refreshTimeElements = document.querySelectorAll('#refreshTime, #refreshTime2');
-            let seconds = 0;
+        // Gauge control functions
+        function updateGauge(needleId, valueId, value, maxValue, needle) {
+            // Calculate rotation (0% = 45deg, 100% = 135deg)
+            const rotation = 45 + (value / maxValue) * 90;
             
-            setInterval(() => {
-                seconds = (seconds + 1) % 10;
-                const displayText = seconds === 0 ? 'Just now' : `${seconds}s ago`;
-                refreshTimeElements.forEach(el => el.textContent = displayText);
-            }, 1000);
+            // Update needle rotation
+            document.getElementById(needleId).style.setProperty('--rotation', `${rotation}deg`);
+            
+            // Update value display
+            document.getElementById(valueId).textContent = Math.round(value);
         }
         
-        // Initialize dashboard charts
-        function initCharts() {
-            const chartOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            stepSize: 20
-                        }
-                    }
-                },
-                animation: {
-                    duration: 1000
-                }
-            };
+        // Simulate real-time data updates
+        function simulateData() {
+            // Generate random values within ranges
+            const airValue1 = 15 + Math.random() * 15; // 15-30 μg/m³ (excellent)
+            const soundValue1 = 45 + Math.random() * 15; // 45-60 dB (normal)
             
-            const chartData1 = {
-                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-                datasets: [
-                    {
-                        label: 'Air Quality',
-                        data: [30, 45, 60, 50, 70, 40],
-                        borderColor: '#3B82F6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Sound Level',
-                        data: [20, 35, 25, 45, 30, 50],
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }
-                ]
-            };
+            const airValue2 = 20 + Math.random() * 20; // 20-40 μg/m³ (good)
+            const soundValue2 = 55 + Math.random() * 20; // 55-75 dB (moderate)
             
-            const chart1 = document.getElementById('dashboardChart');
-            const chart2 = document.getElementById('dashboardChart2');
-            
-            if (chart1) {
-                new Chart(chart1, {
-                    type: 'line',
-                    data: chartData1,
-                    options: chartOptions
-                });
-            }
-            
-            if (chart2) {
-                new Chart(chart2, {
-                    type: 'line',
-                    data: chartData1,
-                    options: chartOptions
-                });
-            }
+            // Update gauges
+            updateGauge('airNeedle1', 'airValue1', airValue1, 100, true);
+            updateGauge('soundNeedle1', 'soundValue1', soundValue1, 100, true);
+            updateGauge('airNeedle2', 'airValue2', airValue2, 100, true);
+            updateGauge('soundNeedle2', 'soundValue2', soundValue2, 100, true);
         }
         
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            updateRefreshTime();
-            initCharts();
+            // Initialize gauges with default values
+            updateGauge('airNeedle1', 'airValue1', 20, 100, true);
+            updateGauge('soundNeedle1', 'soundValue1', 50, 100, true);
+            updateGauge('airNeedle2', 'airValue2', 30, 100, true);
+            updateGauge('soundNeedle2', 'soundValue2', 60, 100, true);
+            
+            // Simulate data updates every 5 seconds
+            setInterval(simulateData, 5000);
             
             // Add shadow to navbar on scroll
             window.addEventListener('scroll', () => {
@@ -1089,6 +1306,5 @@
             });
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
